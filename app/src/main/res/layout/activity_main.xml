@@ -112,7 +112,7 @@
         android:id="@+id/btnlogin"
         android:layout_width="169dp"
         android:layout_height="47dp"
-        android:background="@color/putih"
+        android:background="@drawable/btn_login"
         android:text="LOGIN"
         app:layout_constraintBottom_toBottomOf="@+id/view5"
         app:layout_constraintEnd_toEndOf="@+id/view5"

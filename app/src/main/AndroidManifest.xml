@@ -10,6 +10,34 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".Jadwal"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Kurikulum"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Skripsi"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".KerjaPraktek"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Akademik"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Berkas"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Pengumuman"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".Daftar"
             android:screenOrientation="portrait" />
 
