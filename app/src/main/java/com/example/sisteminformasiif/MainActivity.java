@@ -1,5 +1,6 @@
 package com.example.sisteminformasiif;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,53 +9,99 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class MainActivity extends AppCompatActivity {
-    EditText nim, password;
-    Button btnlogin, btndaftar;
+    EditText emailId, password;
+    Button btnSignIn;
+    TextView tvSignUp;
+    FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        nim = (EditText) findViewById(R.id.nim);
-        password = (EditText) findViewById(R.id.password);
-        btnlogin = (Button) findViewById(R.id.btnlogin);
-        btndaftar = (Button) findViewById(R.id.btndaftar);
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        emailId = findViewById(R.id.editText);
+        password = findViewById(R.id.editText2);
+        btnSignIn = findViewById(R.id.button2);
+        tvSignUp = findViewById(R.id.textView);
 
-        btnlogin.setOnClickListener(new View.OnClickListener() {
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
-            public void onClick(View view) {
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
+                if( mFirebaseUser != null ){
+                    Toast.makeText(MainActivity.this,"You are logged in",Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(MainActivity.this, Menu.class);
+                    startActivity(i);
+                }
+                else{
+                    Toast.makeText(MainActivity.this,"Please Login", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
 
-                String nimkey = nim.getText().toString();
-                String passwordkey = password.getText().toString();
+        btnSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = emailId.getText().toString();
+                String pwd = password.getText().toString();
+                if(email.isEmpty()){
+                    emailId.setError("Please enter email id");
+                    emailId.requestFocus();
+                }
+                else  if(pwd.isEmpty()){
+                    password.setError("Please enter your password");
+                    password.requestFocus();
+                }
+                else  if(email.isEmpty() && pwd.isEmpty()){
+                    Toast.makeText(MainActivity.this,"Fields Are Empty!",Toast.LENGTH_SHORT).show();
+                }
+                else  if(!(email.isEmpty() && pwd.isEmpty())){
+                    mFirebaseAuth.signInWithEmailAndPassword(email, pwd).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(!task.isSuccessful()){
+                                Toast.makeText(MainActivity.this,"Login Error, Please Login Again",Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                Intent intToHome = new Intent(MainActivity.this,Menu.class);
+                                startActivity(intToHome);
+                            }
+                        }
+                    });
+                }
+                else{
+                    Toast.makeText(MainActivity.this,"Error Occurred!",Toast.LENGTH_SHORT).show();
 
-                if (nimkey.equals("mahasiswa") && passwordkey.equals("1234")) {
-                    Toast.makeText(getApplicationContext(), "Username dan Password benar Anda berhasil Login", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(MainActivity.this, Menu.class);
-                    MainActivity.this.startActivity(intent);
-                    finish();
-                } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setMessage("NIM atau Password Anda salah!")
-                            .setNegativeButton("Retry", null).create().show();
                 }
 
-
             }
         });
 
-        btndaftar.setOnClickListener(new View.OnClickListener() {
+        tvSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, Daftar.class);
-                MainActivity.this.startActivity(intent);
-
+            public void onClick(View v) {
+                Intent intSignUp = new Intent(MainActivity.this, Daftar.class);
+                startActivity(intSignUp);
             }
         });
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
 
-
-    }}
+    }
+}

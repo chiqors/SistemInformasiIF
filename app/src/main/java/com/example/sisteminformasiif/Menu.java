@@ -11,10 +11,11 @@ import android.widget.Button;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
 
 
 public class Menu extends AppCompatActivity {
-    Button btnpengumuman, btnkurikulum, btnberkas, btnjadwal, btnlogout ;
+    Button btnpengumuman, btnkurikulum, btnberkas, btnjadwal, btnLogout ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +26,6 @@ public class Menu extends AppCompatActivity {
         btnkurikulum = (Button) findViewById(R.id.btnkurikulum);
         btnberkas = (Button) findViewById(R.id.btnberkas);
         btnjadwal = (Button) findViewById(R.id.btnjadwal);
-        btnlogout = (Button) findViewById(R.id.btnlogout);
 
         btnpengumuman.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,11 +59,14 @@ public class Menu extends AppCompatActivity {
             }
         });
 
-        btnlogout.setOnClickListener(new View.OnClickListener() {
+        btnLogout = findViewById(R.id.logout);
+
+        btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Menu.this, MainActivity.class);
-                Menu.this.startActivity(intent);
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intToMain = new Intent(Menu.this, MainActivity.class);
+                startActivity(intToMain);
             }
         });
 
